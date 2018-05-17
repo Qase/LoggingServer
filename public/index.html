@@ -46,7 +46,11 @@
                 var logsString = '';
                 for(var i = 0; i < responseLogs.length; i++) {
                     var log = responseLogs[i];
-                    logsString += '<tr><td>'  + log.id + '</td><td>' + log.severity + '</td><td>' + log.timestamp +  ' </td><td>' + log.message +  '</td></tr>';
+
+                    var severityClass = '';
+                    if(log.severity === "ERROR" || log.severity === "FATAL") severityClass = 'alert-danger';
+
+                    logsString += '<tr class="' + severityClass + '"><td>'  + log.id + '</td><td>' + log.severity + '</td><td>' + log.timestamp +  ' </td><td>' + log.message +  '</td></tr>';
                 }
                 document.getElementById("logs-table-body").innerHTML = logsString;
             }

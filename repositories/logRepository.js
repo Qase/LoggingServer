@@ -31,6 +31,14 @@ let LogRepository = {
             //     return reject({value: error, code: 400});
             // }
 
+            logs.sort(function(a, b) {
+                var x = a.timestamp;
+                var y = b.timestamp;
+                if (x < y) { return -1; }
+                if (x > y) { return 1; }
+                return 0;
+            });
+
             return resolve({value: logs, code: 200});
         });
     }
