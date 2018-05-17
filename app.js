@@ -6,14 +6,11 @@ var logger = require('morgan');
 var expressValidator = require('express-validator');
 var bodyParser = require('body-parser');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-
 var app = express();
 
 // view engine setup
-//app.set('views', path.join(__dirname, 'views'));
-//app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
 
 app.use(logger('combined')); //'combined' outputs the Apache style LOGs
 app.use(bodyParser.json());
@@ -33,8 +30,8 @@ app.use((req, res, next) => {
     next();
 });
 
-// app.use('/', indexRouter);
-// app.use('/users', usersRouter);
+var indexRouter = require('./routes/index');
+app.use('/', indexRouter);
 
 const Router = require('./routes/router')(app);
 
