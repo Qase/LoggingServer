@@ -7,15 +7,19 @@ let LogValidator = {
         let schema = {
             'timestamp': {
                 notEmpty: true,
-                errorMessage: 'Timestamp mast be provided'
+                errorMessage: 'timestamp must be provided'
+            },
+            'sessionName': {
+                notEmpty: true,
+                errorMessage: 'sessionName name must be provided'
             },
             'message': {
                 notEmpty: true,
-                errorMessage: 'Message must be provided'
+                errorMessage: 'message must be provided'
             },
             'severity': {
                 notEmpty: true,
-                errorMessage: 'Invalid Severiy provided'
+                errorMessage: 'severity must be provided'
             }
         };
 
