@@ -19,7 +19,8 @@ server.listen(webSocketsServerPort, function() {
 });
 
 var wsServer = new webSocketServer({
-    httpServer: server
+    httpServer: server,
+    path: "/ws/v1"
 });
 
 wsServer.on('request', function(request) {
@@ -30,17 +31,23 @@ wsServer.on('request', function(request) {
 
     connection.on('message', function(message) {
         log('Received Message from client ' + index + ': ' + message);
-        var logObject =  JSON.parse(message);
+        try {
+            if(message.type === 'utf8') {
+                var logObject = JSON.parse(message.utf8Data);
 
-        // TODO validate here
+                // TODO validate here
 
-        LogRepository.create(logObject).then(
-            (val) => {
-                return res.status(val.code).send(val.value);
-            },
-            (reason) => {
-                return res.status(reason.code).send(reason.value);
-            });
+                LogRepository.create(logObject).then(
+                    (val) => {
+                        console.log("New log stored.");
+                    },
+                    (reason) => {
+                        console.log("Could not store new log.");
+                    });
+            }
+        } catch (e) {
+            console.log("Received invalid message.");
+        }
     });
 
     connection.on('close', function(connection) {
