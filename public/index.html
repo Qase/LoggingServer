@@ -71,7 +71,7 @@
 
     <div class="row mt-3">
         <div class="col">
-            <table class="table table-hover table-sm">
+            <table class="table table-sm">
                 <thead>
                 <tr>
                     <!--<th scope="col">Id</th>-->
@@ -142,12 +142,35 @@
                     });
             };
 
+            $scope.areAllSeveritiesUnchecked = function() {
+                for(var type in $scope.logSeverities) {
+                    if($scope.logSeverities[type]) {
+                        return false;
+                    }
+                }
+                return true;
+            };
+
+            $scope.isSeverityChecked = function(severity) {
+                for (var type in $scope.logSeverities) {
+                    if ($scope.logSeverities[type]) {
+                        if (severity === type) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            };
+
             $scope.onValuesChanged = function() {
                 $scope.refreshData();
             };
 
             $scope.onFilterChanged = function() {
                 $scope.filteredLogs = [];
+
+                var noneSeverityChecked = $scope.areAllSeveritiesUnchecked();
+
                 for(var i = 0; i < $scope.sessionLogs.length; i++) {
                     var log = $scope.sessionLogs[i];
 
@@ -155,26 +178,7 @@
                         continue;
                     }
 
-                    var noneSeverityChecked = true;
-                    for(var type in $scope.logSeverities) {
-                        if($scope.logSeverities[type]) {
-                            noneSeverityChecked = false;
-                            break;
-                        }
-                    }
-
-                    var severityMatched = false;
-                    if(!noneSeverityChecked) {
-                        for (var type in $scope.logSeverities) {
-                            if ($scope.logSeverities[type]) {
-                                if (log.severity === type) {
-                                    severityMatched = true
-                                }
-                            }
-                        }
-                    }
-
-                    if(severityMatched || noneSeverityChecked) {
+                    if(noneSeverityChecked || $scope.isSeverityChecked(log.severity)) {
                         $scope.filteredLogs.push(log);
                     }
                 }
@@ -185,20 +189,12 @@
                     .then(function (response) {
                         $scope.allSessions = [];
                         $scope.allSessions.push('');
-                        for(var i = 0; i < response.data.length; i++) {
+                        for (var i = 0; i < response.data.length; i++) {
                             $scope.allSessions.push(response.data[i]);
                         }
                     }, function (err) {
                         console.log(err);
                     });
-            };
-
-            $scope.createSessionUrl = function() {
-                var url = BASE_URL;
-                if($scope.isSelectedSessionValid()) {
-                    url += '?sessionName=' + $scope.selectedSession;
-                }
-                return url;
             };
 
             $scope.downloadSessionLogs = function() {
@@ -210,6 +206,14 @@
                     }, function (err) {
                         console.log(err);
                     });
+            };
+
+            $scope.createSessionUrl = function() {
+                var url = BASE_URL;
+                if($scope.isSelectedSessionValid()) {
+                    url += '?sessionName=' + $scope.selectedSession;
+                }
+                return url;
             };
 
             $scope.refreshData = function() {
