@@ -4,26 +4,13 @@ let LogValidator = {
 
     validate: (req, callback) => {
 
-        let schema = {
-            'timestamp': {
-                notEmpty: true,
-                errorMessage: 'timestamp must be provided'
-            },
-            'sessionName': {
-                notEmpty: true,
-                errorMessage: 'sessionName name must be provided'
-            },
-            'message': {
-                notEmpty: true,
-                errorMessage: 'message must be provided'
-            },
-            'severity': {
-                notEmpty: true,
-                errorMessage: 'severity must be provided'
-            }
-        };
+        for(let i = 0; i < req.body.length; i++)  {
+            req.checkBody([i, 'timestamp']).notEmpty();
+            req.checkBody([i, 'sessionName']).notEmpty();
+            req.checkBody([i, 'message']).notEmpty();
+            req.checkBody([i, 'severity']).notEmpty();
+        }
 
-        req.checkBody(schema);
         req.getValidationResult().then(callback);
 
         // TODO check if severity is valid

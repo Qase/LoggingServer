@@ -13,14 +13,22 @@ logRouter.post('/log', (req, res, next) => {
         try {
             result.throw();
 
-            let logObject = {
-                sessionName: req.body.sessionName,
-                timestamp: req.body.timestamp,
-                message: req.body.message,
-                severity: req.body.severity,
-            };
+            let toStore = [];
+            for(let i = 0; i < req.body.length; i++) {
 
-            LogRepository.create(logObject).then(
+                var singleLog = req.body[i];
+
+                let logObject = {
+                    sessionName: singleLog.sessionName,
+                    timestamp: singleLog.timestamp,
+                    message: singleLog.message,
+                    severity: singleLog.severity,
+                };
+
+                toStore.push(logObject);
+            }
+
+            LogRepository.create(toStore).then(
                 (val) => {
                     return res.status(val.code).send(val.value);
                 },

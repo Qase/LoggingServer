@@ -16,23 +16,28 @@ var sorComparator = function(a, b) {
 };
 
 let LogRepository = {
-    create: (logObject) => {
+    create: (logObjects) => {
         return new Promise((resolve, reject) => {
-            let resultLogObject = {
-                id: UUID(),
-                sessionName: logObject.sessionName,
-                timestamp: logObject.timestamp,
-                message: logObject.message,
-                severity: logObject.severity
-            };
+            let resultLogObjects = [];
+            for(let i = 0; i < logObjects.length; i++) {
+                let logObject = logObjects[i];
 
-            if(!logsBySessionName.hasOwnProperty(resultLogObject.sessionName)) {
-                logsBySessionName[resultLogObject.sessionName] = [];
+                let resultLogObject = {
+                    id: UUID(),
+                    sessionName: logObject.sessionName,
+                    timestamp: logObject.timestamp,
+                    message: logObject.message,
+                    severity: logObject.severity
+                };
+
+                if (!logsBySessionName.hasOwnProperty(resultLogObject.sessionName)) {
+                    logsBySessionName[resultLogObject.sessionName] = [];
+                }
+
+                logsBySessionName[resultLogObject.sessionName].push(resultLogObject);
+                resultLogObjects.push(resultLogObject);
             }
-
-            logsBySessionName[resultLogObject.sessionName].push(resultLogObject);
-
-            return resolve({value: resultLogObject, code: 201});
+            return resolve({value: resultLogObjects, code: 201});
         });
     },
     getAll: () => {
