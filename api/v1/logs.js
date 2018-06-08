@@ -5,7 +5,6 @@ const express = require('express');
 const LogValidator = require('../../validators/logValidator');
 const LogRepository = require('../../repositories/logRepository');
 
-
 let logRouter = express.Router();
 
 logRouter.post('/log', (req, res, next) => {
@@ -51,16 +50,6 @@ logRouter.get('/log', (req, res, next) => {
         promise = LogRepository.getAll();
     }
     promise.then(
-        (val) => {
-            return res.status(val.code).send(val.value);
-        },
-        (reason) => {
-            return res.status(reason.code).send(reason.value);
-        });
-});
-
-logRouter.get('/log/sessions', (req, res, next) => {
-    LogRepository.getAllSessions().then(
         (val) => {
             return res.status(val.code).send(val.value);
         },

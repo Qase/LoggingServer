@@ -103,7 +103,7 @@
         .filter('logsFilter')
         .controller('MainController', function ($scope, $http, $window) {
 
-            const BASE_URL = './api/v1/log';
+            const BASE_URL = './api/v1';
             const SESSIONS_REFRESH_INTERVAL_IN_MS = 1000;
 
             $scope.selectedSession = null;
@@ -185,7 +185,7 @@
             };
 
             $scope.downloadSessions = function() {
-                $http.get(BASE_URL + '/sessions')
+                $http.get(BASE_URL + '/session')
                     .then(function (response) {
                         $scope.allSessions = [];
                         $scope.allSessions.push('');
@@ -209,7 +209,7 @@
             };
 
             $scope.createSessionUrl = function() {
-                var url = BASE_URL;
+                var url = BASE_URL + '/log';
                 if($scope.isSelectedSessionValid()) {
                     url += '?sessionName=' + $scope.selectedSession;
                 }
