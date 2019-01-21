@@ -46,12 +46,14 @@ Easy to use server for collecting and presenting logs from connected devices.
 | timestamp   | Int        | no           | unix time in milliseconds                                 |
 
 #### REST api
-* rest function: POST
-* http address : http://webserver/api/v1/log/
-* headers: Content-Type - application/json; charset=UTF-8
-* body: json of array of log entities
-* other: max payload size
-* response: exact same data as being sent
+|               |                                                |
+|---------------|------------------------------------------------|
+| rest function | POST                                           |
+| http address  | http://webserver/api/v1/log/                   |
+| headers       | Content-Type - application/json; charset=UTF-8 |
+| body          | json                                           |
+| other         | max payload size                               |
+| response      | exact                                          |
 
 ###### Example
 ```
@@ -75,9 +77,6 @@ Content-Type: application/json; charset=UTF-8
 * body: json of array of log entities
 * other: max payload size???
 * response: ??
-
-## 
-
 
 ## License
 [MIT](https://github.com/nishanths/license/blob/master/LICENSE)
