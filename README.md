@@ -45,15 +45,21 @@ Easy to use server for collecting and presenting logs from connected devices.
 | severity    | String     | d            | one of type - verbose, debug, info, warning, error, fatal |
 | timestamp   | Int        | no           | unix time in milliseconds                                 |
 
-#### REST api
-|               |                                                |
+| REST api      |                                                |
 |---------------|------------------------------------------------|
 | rest function | POST                                           |
-| http address  | http://webserver/api/v1/log/                   |
+| http address  | `http://webserver/api/v1/log/`                 |
 | headers       | Content-Type - application/json; charset=UTF-8 |
 | body          | json                                           |
 | other         | max payload size                               |
-| response      | exact                                          |
+| response      | the exact same text                            |
+
+| WebSocket     |                                                |
+|---------------|------------------------------------------------|
+| address       | `ws://webserver/ws/v1/`                        |
+| body          | json                                           |
+| other         | max payload size                               |
+| response      | exact      is tehre any???                     |
 
 ###### Example
 ```
@@ -64,19 +70,13 @@ Content-Type: application/json; charset=UTF-8
 [
     {
         "id": "",
-        "message": "xdddd",
-        "sessionName": "KotlinLoggerSession_VzsM",
+        "message": "Test log message",
+        "sessionName": "MyAndroidSession",
         "severity": "ERROR",
         "timestamp": 1547927957870
     }
 ]
 ```
-
-#### WebSocket
-* address: ws://webserver/ws/v1/
-* body: json of array of log entities
-* other: max payload size???
-* response: ??
 
 ## License
 [MIT](https://github.com/nishanths/license/blob/master/LICENSE)
