@@ -14,7 +14,11 @@ app.set('view engine', 'pug');
 
 app.use(logger('combined')); //'combined' outputs the Apache style LOGs
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({
+    parameterLimit: 100000,
+    limit: '50mb',
+    extended: true
+}));
 app.use(bodyParser.json({ type: 'application/*+json' }))
 app.use(expressValidator([])); // this line must be immediately after any of the bodyParser middlewares!
 app.use(cookieParser());
