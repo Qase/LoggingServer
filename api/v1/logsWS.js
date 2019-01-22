@@ -1,6 +1,6 @@
 "use strict";
 
-const webSocketsServerPort = 12345;
+const webSocketsServerPort = 46379;
 const webSocketServer = require('websocket').server;
 const http = require('http');
 
