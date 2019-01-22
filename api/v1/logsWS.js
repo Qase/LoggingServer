@@ -1,8 +1,8 @@
 "use strict";
 
-const  webSocketsServerPort = 12345;
+const webSocketsServerPort = 12345;
 const webSocketServer = require('websocket').server;
-const  http = require('http');
+const http = require('http');
 
 const LogRepository = require('../../repositories/logRepository');
 
@@ -15,7 +15,7 @@ function log(message) {
 var server = http.createServer(function(request, response) {});
 
 server.listen(webSocketsServerPort, function() {
-    log("Server is listening on port " + webSocketsServerPort);
+    log("WS Server is listening on port " + webSocketsServerPort);
 });
 
 var wsServer = new webSocketServer({
