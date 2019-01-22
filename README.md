@@ -10,7 +10,6 @@ Easy to use server for collecting and presenting logs from connected devices.
 * Written in javascript
 * Supports REST api as well as WebSocket connections
 * Filter logs by session name, log severity or message content
-* ---------- nejaky paramtery pri spousteni??
 
 ## How do I run it localy?
 
@@ -39,11 +38,11 @@ Easy to use server for collecting and presenting logs from connected devices.
 #### Log entity definition
 | Field name  | Field type | Can be empty | Description                                               |
 |-------------|------------|--------------|-----------------------------------------------------------|
-| id          | String     | YES          | ?????????????message,                                     |
-| messsage    | String     | NO:::        | content                                                   |
-| sessionName | String     | xd           | filtering name                                            |
-| severity    | String     | d            | one of type - verbose, debug, info, warning, error, fatal |
-| timestamp   | Int        | no           | unix time in milliseconds                                 |
+| id          | String     | YES          | server id of log entity                                   |
+| messsage    | String     | NO           | content of log                                            |
+| sessionName | String     | NO           | filtering name                                            |
+| severity    | String     | NO           | one of type - verbose, debug, info, warning, error, fatal |
+| timestamp   | Int        | NO           | unix time in milliseconds                                 |
 
 | REST api      |                                                |
 |---------------|------------------------------------------------|
@@ -52,14 +51,14 @@ Easy to use server for collecting and presenting logs from connected devices.
 | headers       | Content-Type - application/json; charset=UTF-8 |
 | body          | json                                           |
 | other         | max payload size                               |
-| response      | the exact same text                            |
+| response      | the exact same text with log id set            |
 
 | WebSocket     |                                                |
 |---------------|------------------------------------------------|
 | address       | `ws://webserver/ws/v1/`                        |
 | body          | json                                           |
 | other         | max payload size                               |
-| response      | exact      is tehre any???                     |
+| response      | no response                                    |
 
 ###### Example
 ```
