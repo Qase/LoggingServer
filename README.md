@@ -10,6 +10,7 @@ Easy to use server for collecting and presenting logs from connected devices.
 * Written in javascript
 * Supports REST api as well as WebSocket connections
 * Filter logs by session name, log severity or message content
+* Project is constantly developed
 
 ## How do I run it localy?
 
@@ -26,12 +27,14 @@ Easy to use server for collecting and presenting logs from connected devices.
 * run `npm install`
 * `cd PROJECT_ROOT_FOLDER`
 * run `nodejs bin/www`
+* use port `46379` for WebSocket or `63131` for REST Api
+* browse `localhost:63131` for web interface
 
 #### Share it outside of localhost
 
 * use utility called [ngrok](https://ngrok.com/) to tunnel your localhost
-* `ngrok http 3000` for REST API
-* `ngrok http 12345` for WebSocket
+* `ngrok http 63131` for REST API
+* `ngrok http 46379` for WebSocket
 
 ## Endpoints
 
@@ -49,15 +52,14 @@ Easy to use server for collecting and presenting logs from connected devices.
 | rest function | POST                                           |
 | http address  | `http://webserver/api/v1/log/`                 |
 | headers       | Content-Type - application/json; charset=UTF-8 |
-| body          | json                                           |
-| other         | max payload size                               |
+| body          | json - array of log entities                   |
+| other         | be careful of max payload size 100kB           |
 | response      | the exact same text with log id set            |
 
 | WebSocket     |                                                |
 |---------------|------------------------------------------------|
 | address       | `ws://webserver/ws/v1/`                        |
-| body          | json                                           |
-| other         | max payload size                               |
+| body          | json - array of log entities                   |
 | response      | no response                                    |
 
 ###### Example
