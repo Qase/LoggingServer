@@ -24,8 +24,8 @@ Easy to use server for collecting and presenting logs from connected devices.
 
 #### Run
 
+* `cd PROJECT_ROOT_FOLDER` 
 * run `npm install`
-* `cd PROJECT_ROOT_FOLDER`
 * run `nodejs bin/www`
 * use port `46379` for WebSocket or `63131` for REST Api
 * browse `localhost:63131` for web interface
