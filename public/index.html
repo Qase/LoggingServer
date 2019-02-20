@@ -9,7 +9,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+          integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
 </head>
@@ -25,11 +26,15 @@
 
     <div class="row mt-3">
         <div class="col">
-            <select id="sessionName" class="form-control form-control mb-2 mr-sm-2 mb-sm-0" data-ng-model="selectedSession" data-ng-change="onValuesChanged()" data-ng-options="x for x in allSessions"></select>
+            <select id="sessionName" class="form-control form-control mb-2 mr-sm-2 mb-sm-0"
+                    data-ng-model="selectedSession" data-ng-change="onValuesChanged()"
+                    data-ng-options="x for x in allSessions"></select>
         </div>
 
         <div class="col">
-            <button type="button" class="btn btn-primary" data-ng-click="onDeleteSessionLogsClicked()" data-ng-hide="!isSelectedSessionValid()">Delete Session</button>
+            <button type="button" class="btn btn-primary" data-ng-click="onDeleteSessionLogsClicked()"
+                    data-ng-hide="!isSelectedSessionValid()">Delete Session
+            </button>
         </div>
     </div>
 
@@ -40,7 +45,8 @@
                 <div class="card">
                     <div class="card-header" id="headingTwo">
                         <h5 class="mb-0">
-                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                                    data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                                 Filter Options
                             </button>
                         </h5>
@@ -51,12 +57,16 @@
                                 <div class="form-group row">
                                     <!--<label for="messageFilter" class="col-sm-2 col-form-label">Filter message</label>-->
                                     <div class="col-sm-12">
-                                        <input type="text" id="messageFilter" class="form-control" placeholder="Message filter" data-ng-change="onFilterChanged()" data-ng-model="messageFilter">
+                                        <input type="text" id="messageFilter" class="form-control"
+                                               placeholder="Message filter" data-ng-change="onFilterChanged()"
+                                               data-ng-model="messageFilter">
                                     </div>
                                 </div>
-                                <div class="form-check form-check-inline" data-ng-repeat="(type,enabled) in logSeverities">
+                                <div class="form-check form-check-inline"
+                                     data-ng-repeat="(type,enabled) in logSeverities">
                                     <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" data-ng-model="logSeverities[type]" data-ng-change="onFilterChanged()">
+                                        <input class="form-check-input" type="checkbox"
+                                               data-ng-model="logSeverities[type]" data-ng-change="onFilterChanged()">
                                         {{type}}
                                     </label>
                                 </div>
@@ -82,13 +92,14 @@
                 </tr>
                 </thead>
                 <tbody>
-                    <tr data-ng-repeat="log in filteredLogs" data-ng-class="{'alert-danger': log.severity === 'ERROR' || log.severity === 'FATAL', 'alert-warning': log.severity === 'WARNING', 'alert-success': log.severity === 'INFO' }">
-                        <!--<td>{{log.id}}</td>-->
-                        <!--<td>{{log.sessionName}}</td>-->
-                        <td>{{log.timestamp | date:'yyyy-MM-dd HH:mm:ss.sss'}}</td>
-                        <td>{{log.severity}}</td>
-                        <td>{{log.message}}</td>
-                    </tr>
+                <tr data-ng-repeat="log in filteredLogs"
+                    data-ng-class="{'alert-danger': log.severity === 'ERROR' || log.severity === 'FATAL', 'alert-warning': log.severity === 'WARNING', 'alert-success': log.severity === 'INFO' }">
+                    <!--<td>{{log.id}}</td>-->
+                    <!--<td>{{log.sessionName}}</td>-->
+                    <td>{{log.timestamp | date:'yyyy-MM-dd HH:mm:ss.sss'}}</td>
+                    <td>{{log.severity}}</td>
+                    <td>{{log.message}}</td>
+                </tr>
                 </tbody>
             </table>
         </div>
@@ -121,15 +132,15 @@
                 FATAL: false,
             };
 
-            $scope.isSelectedSessionValid = function() {
-                if($scope.selectedSession === null || $scope.selectedSession === '') {
+            $scope.isSelectedSessionValid = function () {
+                if ($scope.selectedSession === null || $scope.selectedSession === '') {
                     return false;
                 }
                 return true;
             };
 
-            $scope.onDeleteSessionLogsClicked = function() {
-                if(!$scope.isSelectedSessionValid()) {
+            $scope.onDeleteSessionLogsClicked = function () {
+                if (!$scope.isSelectedSessionValid()) {
                     return;
                 }
 
@@ -142,16 +153,16 @@
                     });
             };
 
-            $scope.areAllSeveritiesUnchecked = function() {
-                for(var type in $scope.logSeverities) {
-                    if($scope.logSeverities[type]) {
+            $scope.areAllSeveritiesUnchecked = function () {
+                for (var type in $scope.logSeverities) {
+                    if ($scope.logSeverities[type]) {
                         return false;
                     }
                 }
                 return true;
             };
 
-            $scope.isSeverityChecked = function(severity) {
+            $scope.isSeverityChecked = function (severity) {
                 for (var type in $scope.logSeverities) {
                     if ($scope.logSeverities[type]) {
                         if (severity === type) {
@@ -162,29 +173,29 @@
                 return false;
             };
 
-            $scope.onValuesChanged = function() {
+            $scope.onValuesChanged = function () {
                 $scope.refreshData();
             };
 
-            $scope.onFilterChanged = function() {
+            $scope.onFilterChanged = function () {
                 $scope.filteredLogs = [];
 
                 var noneSeverityChecked = $scope.areAllSeveritiesUnchecked();
 
-                for(var i = 0; i < $scope.sessionLogs.length; i++) {
+                for (var i = 0; i < $scope.sessionLogs.length; i++) {
                     var log = $scope.sessionLogs[i];
 
                     if ($scope.messageFilter !== null && log.message.toLowerCase().indexOf($scope.messageFilter.toLowerCase()) < 0) {
                         continue;
                     }
 
-                    if(noneSeverityChecked || $scope.isSeverityChecked(log.severity)) {
+                    if (noneSeverityChecked || $scope.isSeverityChecked(log.severity)) {
                         $scope.filteredLogs.push(log);
                     }
                 }
             };
 
-            $scope.downloadSessions = function() {
+            $scope.downloadSessions = function () {
                 $http.get(BASE_URL + '/session')
                     .then(function (response) {
                         $scope.allSessions = [];
@@ -197,33 +208,43 @@
                     });
             };
 
-            $scope.downloadSessionLogs = function() {
+            $scope.downloadSessionLogs = function () {
                 var url = $scope.createSessionUrl();
-                $http.get(url)
+                $http.get(url, {
+                    headers: {
+                        'x-last-updated': $scope.lastModified
+                    }
+                })
                     .then(function (response) {
-                        $scope.sessionLogs = response.data;
-                        $scope.onFilterChanged();
+                        console.log(response.data.length);
+                        if (response.data.length > 0) {
+                            $scope.lastModified = response.data[response.data.length - 1].timestamp;
+                            console.log($scope.lastModified);
+                            $scope.sessionLogs = $scope.sessionLogs.concat(response.data);
+                            $scope.onFilterChanged();
+                        }
+
                     }, function (err) {
                         console.log(err);
                     });
             };
 
-            $scope.createSessionUrl = function() {
+            $scope.createSessionUrl = function () {
                 var url = BASE_URL + '/log';
-                if($scope.isSelectedSessionValid()) {
+                if ($scope.isSelectedSessionValid()) {
                     url += '?sessionName=' + $scope.selectedSession;
                 }
                 return url;
             };
 
-            $scope.refreshData = function() {
+            $scope.refreshData = function () {
                 $scope.downloadSessions();
                 $scope.downloadSessionLogs();
             };
 
-            $scope.init = function() {
+            $scope.init = function () {
                 $scope.refreshData();
-                setInterval(function() {
+                setInterval(function () {
                     $scope.refreshData()
                 }, SESSIONS_REFRESH_INTERVAL_IN_MS);
             };
@@ -232,9 +253,15 @@
         });
 </script>
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
+        integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+        crossorigin="anonymous"></script>
 
 </body>
 </html>

@@ -1,7 +1,6 @@
 "use strict";
 
 const express = require('express');
-
 const LogValidator = require('../../validators/logValidator');
 const LogRepository = require('../../repositories/logRepository');
 
@@ -13,7 +12,7 @@ logRouter.post('/log', (req, res, next) => {
             result.throw();
 
             let toStore = [];
-            for(let i = 0; i < req.body.length; i++) {
+            for (let i = 0; i < req.body.length; i++) {
 
                 var singleLog = req.body[i];
 
@@ -37,17 +36,21 @@ logRouter.post('/log', (req, res, next) => {
 
         } catch (e) {
             console.log(e.array());
-            res.status(400).send({ errors: e.array(), message: 'Input data validation failed.' });
+            res.status(400).send({errors: e.array(), message: 'Input data validation failed.'});
         }
     });
 });
 
 logRouter.get('/log', (req, res, next) => {
+    var lastUpdated = Number(req.get('x-last-updated'));
+    if (isNaN(lastUpdated)) {
+        lastUpdated = null;
+    }
     var promise;
-    if(req.query.hasOwnProperty('sessionName')) {
-        promise = LogRepository.getBySessionName(req.query.sessionName);
+    if (req.query.hasOwnProperty('sessionName')) {
+        promise = LogRepository.getBySessionName(req.query.sessionName, lastUpdated);
     } else {
-        promise = LogRepository.getAll();
+        promise = LogRepository.getAll(lastUpdated);
     }
     promise.then(
         (val) => {
@@ -60,7 +63,7 @@ logRouter.get('/log', (req, res, next) => {
 
 logRouter.delete('/log', (req, res, next) => {
     var promise;
-    if(req.query.hasOwnProperty('sessionName')) {
+    if (req.query.hasOwnProperty('sessionName')) {
         promise = LogRepository.deleteBySessionName(req.query.sessionName);
     } else {
         promise = LogRepository.deleteAll();
