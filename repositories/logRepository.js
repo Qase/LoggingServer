@@ -44,6 +44,48 @@ let LogRepository = {
             return resolve({value: resultLogObjects, code: 201});
         });
     },
+    getBySessionNameAsString: (sessionName) => {
+        var text = "";
+        if (!logsBySessionName.hasOwnProperty(sessionName)) {
+            return reject({value: error, code: 404});
+        }
+
+        var sessionLogItems = logsBySessionName[sessionName];
+        sessionLogItems.sort(sorComparator);
+        sessionLogItems.forEach(function (sessionLogItem) {
+            if (sessionLogItem.timestamp) {
+                text += new Date(sessionLogItem.timestamp).toISOString().replace(/T/, ' ').replace(/\..+/, '');
+                text += ":  ";
+                text += sessionLogItem.severity;
+                text += ":  ";
+                text += sessionLogItem.message;
+                text += "\n";
+            }
+        });
+        return text;
+    },
+    getAllAsString: () => {
+        var text = "";
+        var sessionLogItems = [];
+        // console.log(logsBySessionName);
+        for (var sessionName in logsBySessionName) {
+            if (!logsBySessionName.hasOwnProperty(sessionName)) continue;
+            sessionLogItems = sessionLogItems.concat(logsBySessionName[sessionName]);
+        }
+        // var sessionLogItems = logsBySessionName[sessionName];
+        sessionLogItems.sort(sorComparator);
+        sessionLogItems.forEach(function (sessionLogItem) {
+            if (sessionLogItem.timestamp) {
+                text += new Date(sessionLogItem.timestamp).toISOString().replace(/T/, ' ').replace(/\..+/, '');
+                text += ":  ";
+                text += sessionLogItem.severity;
+                text += ":  ";
+                text += sessionLogItem.message;
+                text += "\n";
+            }
+        });
+        return text;
+    },
     getAll: (lastUpdated) => {
         return new Promise((resolve, reject) => {
             let result = [];
