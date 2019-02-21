@@ -27,13 +27,14 @@
     <div class="row mt-3">
         <div class="col">
             <select id="sessionName" class="form-control form-control mb-2 mr-sm-2 mb-sm-0"
-                    data-ng-model="selectedSession" data-ng-change="onValuesChanged()"
-                    data-ng-options="x for x in allSessions"></select>
+                    data-ng-model="selectedSession" data-ng-change="sessionChanged()"
+                    data-ng-options="x.value as x.label for x in allSessions">
+            </select>
         </div>
 
         <div class="col">
             <button type="button" class="btn btn-primary" data-ng-click="onDeleteSessionLogsClicked()"
-                    data-ng-hide="!isSelectedSessionValid()">Delete Session
+                    data-ng-hide="!selectedSession">Delete Session
             </button>
         </div>
     </div>
@@ -58,15 +59,14 @@
                                     <!--<label for="messageFilter" class="col-sm-2 col-form-label">Filter message</label>-->
                                     <div class="col-sm-12">
                                         <input type="text" id="messageFilter" class="form-control"
-                                               placeholder="Message filter" data-ng-change="onFilterChanged()"
-                                               data-ng-model="messageFilter">
+                                               placeholder="Message filter" data-ng-model="filter.messageFilter">
                                     </div>
                                 </div>
                                 <div class="form-check form-check-inline"
-                                     data-ng-repeat="(type,enabled) in logSeverities">
+                                     data-ng-repeat="(type,enabled) in filter.logSeverities">
                                     <label class="form-check-label">
                                         <input class="form-check-input" type="checkbox"
-                                               data-ng-model="logSeverities[type]" data-ng-change="onFilterChanged()">
+                                               data-ng-model="filter.logSeverities[type]">
                                         {{type}}
                                     </label>
                                 </div>
@@ -92,7 +92,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr data-ng-repeat="log in filteredLogs"
+                <tr data-ng-repeat="log in sessionLogs | logsFilter:filter"
                     data-ng-class="{'alert-danger': log.severity === 'ERROR' || log.severity === 'FATAL', 'alert-warning': log.severity === 'WARNING', 'alert-success': log.severity === 'INFO' }">
                     <!--<td>{{log.id}}</td>-->
                     <!--<td>{{log.sessionName}}</td>-->
@@ -111,131 +111,102 @@
         .config(function () {
 
         })
-        .filter('logsFilter')
-        .controller('MainController', function ($scope, $http, $window) {
-
-            const BASE_URL = './api/v1';
-            const SESSIONS_REFRESH_INTERVAL_IN_MS = 1000;
-
-            $scope.selectedSession = null;
-            $scope.allSessions = [];
-            $scope.sessionLogs = [];
-            $scope.filteredLogs = [];
-            $scope.messageFilter = null;
-
-            $scope.logSeverities = {
-                VERBOSE: false,
-                DEBUG: false,
-                INFO: false,
-                WARNING: false,
-                ERROR: false,
-                FATAL: false,
-            };
-
-            $scope.isSelectedSessionValid = function () {
-                if ($scope.selectedSession === null || $scope.selectedSession === '') {
-                    return false;
-                }
-                return true;
-            };
-
-            $scope.onDeleteSessionLogsClicked = function () {
-                if (!$scope.isSelectedSessionValid()) {
-                    return;
-                }
-
-                var url = $scope.createSessionUrl();
-                $http.delete(url)
-                    .then(function (response) {
-                        $scope.onValuesChanged();
-                    }, function (err) {
-                        console.log(err);
-                    });
-            };
-
-            $scope.areAllSeveritiesUnchecked = function () {
-                for (var type in $scope.logSeverities) {
-                    if ($scope.logSeverities[type]) {
+        .constant("restUrl", '/api/v1')
+        .constant("refreshInterval", 1000)
+        .filter('logsFilter', function () {
+            function areAllSeveritiesUnchecked(severities) {
+                for (const type in severities) {
+                    if (severities[type]) {
                         return false;
                     }
                 }
                 return true;
-            };
+            }
 
-            $scope.isSeverityChecked = function (severity) {
-                for (var type in $scope.logSeverities) {
-                    if ($scope.logSeverities[type]) {
-                        if (severity === type) {
-                            return true;
-                        }
+            return function (logs, filterConfig) {
+                const filteredLogs = [];
+                const noneSeverityChecked = areAllSeveritiesUnchecked(filterConfig.logSeverities);
+                for (let i = 0; i < logs.length; i++) {
+                    const log = logs[i];
+                    if (filterConfig.messageFilter !== null && log.message.toLowerCase().indexOf(filterConfig.messageFilter.toLowerCase()) < 0) {
+                        continue;
+                    }
+                    if (noneSeverityChecked || (filterConfig.logSeverities[log.severity])) {
+                        filteredLogs.push(log);
                     }
                 }
-                return false;
+                return filteredLogs;
+            }
+        })
+        .controller('MainController', function ($scope, $http, restUrl, refreshInterval) {
+            $scope.selectedSession = null;
+            $scope.allSessions = [{label: "Všechny", value: null}];
+            $scope.sessionLogs = [];
+            $scope.filter = {
+                messageFilter: null,
+                logSeverities: {
+                    VERBOSE: false,
+                    DEBUG: false,
+                    INFO: false,
+                    WARNING: false,
+                    ERROR: false,
+                    FATAL: false,
+                }
             };
 
-            $scope.onValuesChanged = function () {
+            $scope.onDeleteSessionLogsClicked = function () {
+                $http({
+                    method: 'DELETE',
+                    url: restUrl + '/log',
+                    params: {
+                        sessionName: $scope.selectedSession,
+                    }
+                }).then(function (response) {
+                    $scope.sessionChanged();
+                }, function (err) {
+                    console.log(err);
+                });
+
+            };
+
+            $scope.sessionChanged = function () {
+                $scope.lastUpdated = null;
+                $scope.sessionLogs = [];
                 $scope.refreshData();
             };
 
-            $scope.onFilterChanged = function () {
-                $scope.filteredLogs = [];
-
-                var noneSeverityChecked = $scope.areAllSeveritiesUnchecked();
-
-                for (var i = 0; i < $scope.sessionLogs.length; i++) {
-                    var log = $scope.sessionLogs[i];
-
-                    if ($scope.messageFilter !== null && log.message.toLowerCase().indexOf($scope.messageFilter.toLowerCase()) < 0) {
-                        continue;
-                    }
-
-                    if (noneSeverityChecked || $scope.isSeverityChecked(log.severity)) {
-                        $scope.filteredLogs.push(log);
-                    }
-                }
-            };
-
             $scope.downloadSessions = function () {
-                $http.get(BASE_URL + '/session')
-                    .then(function (response) {
-                        $scope.allSessions = [];
-                        $scope.allSessions.push('');
-                        for (var i = 0; i < response.data.length; i++) {
-                            $scope.allSessions.push(response.data[i]);
-                        }
-                    }, function (err) {
-                        console.log(err);
-                    });
+                $http({
+                    method: 'GET',
+                    url: restUrl + '/session'
+                }).then(function (response) {
+                    $scope.allSessions = [{label: "Všechny", value: null}];
+                    response.data.forEach(function (session) {
+                        $scope.allSessions.push({value: session, label: session});
+                    })
+                }, function (err) {
+                    console.log(err);
+                });
             };
 
             $scope.downloadSessionLogs = function () {
-                var url = $scope.createSessionUrl();
-                $http.get(url, {
-                    headers: {
-                        'x-last-updated': $scope.lastModified
+                $http({
+                    method: 'GET',
+                    url: restUrl + '/log',
+                    params: {
+                        sessionName: $scope.selectedSession,
+                        lastUpdated: $scope.lastUpdated
                     }
-                })
-                    .then(function (response) {
-                        console.log(response.data.length);
-                        if (response.data.length > 0) {
-                            $scope.lastModified = response.data[response.data.length - 1].timestamp;
-                            console.log($scope.lastModified);
-                            $scope.sessionLogs = $scope.sessionLogs.concat(response.data);
-                            $scope.onFilterChanged();
-                        }
-
-                    }, function (err) {
-                        console.log(err);
-                    });
+                }).then(function (response) {
+                    if (response.data.length > 0) {
+                        $scope.lastUpdated = response.data[response.data.length - 1].timestamp;
+                        $scope.sessionLogs = $scope.sessionLogs.concat(response.data);
+                    }
+                }, function (err) {
+                    console.log(err);
+                });
             };
 
-            $scope.createSessionUrl = function () {
-                var url = BASE_URL + '/log';
-                if ($scope.isSelectedSessionValid()) {
-                    url += '?sessionName=' + $scope.selectedSession;
-                }
-                return url;
-            };
 
             $scope.refreshData = function () {
                 $scope.downloadSessions();
@@ -246,7 +217,7 @@
                 $scope.refreshData();
                 setInterval(function () {
                     $scope.refreshData()
-                }, SESSIONS_REFRESH_INTERVAL_IN_MS);
+                }, refreshInterval);
             };
 
             $scope.init();
