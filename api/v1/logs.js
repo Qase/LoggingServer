@@ -71,9 +71,9 @@ logRouter.get('/log', (req, res, next) => {
 logRouter.get('/log/download', function (req, res) {
     let text;
     if (req.query.hasOwnProperty('sessionName')) {
-        text = LogRepository.getBySessionNameAsString(req.query.sessionName)
+        text = LogRepository.getAsString(req.query.sessionName)
     } else {
-        text = LogRepository.getAllAsString()
+        text = LogRepository.getAsString(null)
     }
     let file = __dirname + '/log.txt';
     fs.writeFile(file, text, function (err) {
