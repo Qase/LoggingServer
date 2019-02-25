@@ -3,6 +3,7 @@
 const express = require('express');
 const LogValidator = require('../../validators/logValidator');
 const LogRepository = require('../../repositories/logRepository');
+const fs = require('fs');
 
 let logRouter = express.Router();
 
@@ -65,6 +66,20 @@ logRouter.get('/log', (req, res, next) => {
         (reason) => {
             return res.status(reason.code).send(reason.value);
         });
+});
+
+logRouter.get('/log/download', function (req, res) {
+    let text;
+    if (req.query.hasOwnProperty('sessionName')) {
+        text = LogRepository.getAsString(req.query.sessionName)
+    } else {
+        text = LogRepository.getAsString(null)
+    }
+    let file = __dirname + '/log.txt';
+    fs.writeFile(file, text, function (err) {
+        if (err) throw err;
+        res.download(file); // Set disposition and send it.
+    });
 });
 
 logRouter.delete('/log', (req, res, next) => {

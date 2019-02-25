@@ -26,9 +26,6 @@
 
     <div class="row mt-3">
         <div class="col">
-            <label for="sessionName">
-                Vyberte session
-            </label>
             <select id="sessionName" class="form-control form-control mb-2 mr-sm-2 mb-sm-0"
                     data-ng-model="selectedSession" data-ng-change="sessionChanged()"
                     data-ng-options="x.value as x.label for x in allSessions">
@@ -39,6 +36,10 @@
             <button type="button" class="btn btn-primary" data-ng-click="onDeleteSessionLogsClicked()"
                     data-ng-hide="!selectedSession">Delete Session
             </button>
+        </div>
+
+        <div class="col">
+            <a class="btn btn-primary" href="{{downloadUrl()}}" target="_blank">Download logs</a>
         </div>
     </div>
 
@@ -96,7 +97,7 @@
                 </thead>
                 <tbody>
                 <tr data-ng-repeat="log in sessionLogs | logsFilter:filter"
-                    data-ng-class="{'alert-danger': log.severity === 'ERROR' || log.severity === 'FATAL', 'alert-warning': log.severity === 'WARNING', 'alert-success': log.severity === 'INFO' }">
+                    data-ng-class="{'alert-danger': log.severity === 'ERROR' || log.severity === 'FATAL', 'alert-warning': log.severity === 'WARNING', 'alert-success': log.severity === 'DEBUG', 'alert-info': log.severity === 'INFO' }">
                     <!--<td>{{log.id}}</td>-->
                     <!--<td>{{log.sessionName}}</td>-->
                     <td>{{log.timestamp | date:'yyyy-MM-dd HH:mm:ss.sss'}}</td>
@@ -144,7 +145,7 @@
         })
         .controller('MainController', function ($scope, $http, restUrl, refreshInterval) {
             $scope.selectedSession = null;
-            $scope.allSessions = [{label: "Všechny", value: null}];
+            $scope.allSessions = [{label: "All", value: null}];
             $scope.sessionLogs = [];
             $scope.filter = {
                 messageFilter: null,
@@ -177,6 +178,9 @@
                 $scope.lastUpdated = null;
                 $scope.sessionLogs = [];
                 $scope.refreshData();
+            };
+            $scope.downloadUrl = function () {
+                return restUrl + '/log/download' + ($scope.selectedSession ? '?sessionName=' + $scope.selectedSession : '');
             };
 
             $scope.downloadSessions = function () {
