@@ -43,10 +43,16 @@ logRouter.post('/log', (req, res, next) => {
 });
 
 logRouter.get('/log', (req, res, next) => {
-    var lastUpdated = Number(req.get('x-last-updated'));
-    if (isNaN(lastUpdated)) {
+    var lastUpdated;
+    if (req.query.hasOwnProperty('lastUpdated')) {
+        lastUpdated = req.query.lastUpdated;
+        if (isNaN(lastUpdated)) {
+            lastUpdated = null;
+        }
+    } else {
         lastUpdated = null;
     }
+
     var promise;
     if (req.query.hasOwnProperty('sessionName')) {
         promise = LogRepository.getBySessionName(req.query.sessionName, lastUpdated);
