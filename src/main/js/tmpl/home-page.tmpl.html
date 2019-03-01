@@ -1,0 +1,93 @@
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-sm">
+            <h1>Logs</h1>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col">
+            <select id="sessionName" class="form-control form-control mb-2 mr-sm-2 mb-sm-0"
+                    data-ng-model="selectedSession" data-ng-change="sessionChanged()"
+                    data-ng-options="x.value as x.label for x in allSessions">
+            </select>
+        </div>
+
+        <div class="col">
+            <button type="button" class="btn btn-primary" data-ng-click="onDeleteSessionLogsClicked()"
+                    data-ng-hide="!selectedSession">Delete Session
+            </button>
+        </div>
+
+        <div class="col">
+            <a class="btn btn-primary" href="{{downloadUrl()}}" target="_blank">Download logs</a>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col">
+
+            <div class="accordion" id="accordionExample">
+                <div class="card">
+                    <div class="card-header" id="headingTwo">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                                    data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                Filter Options
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                        <div class="card-body">
+                            <form>
+                                <div class="form-group row">
+                                    <!--<label for="messageFilter" class="col-sm-2 col-form-label">Filter message</label>-->
+                                    <div class="col-sm-12">
+                                        <input type="text" id="messageFilter" class="form-control"
+                                               placeholder="Message filter" data-ng-model="filter.messageFilter">
+                                    </div>
+                                </div>
+                                <div class="form-check form-check-inline"
+                                     data-ng-repeat="(type,enabled) in filter.logSeverities">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox"
+                                               data-ng-model="filter.logSeverities[type]">
+                                        {{type}}
+                                    </label>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col">
+            <table class="table table-sm">
+                <thead>
+                <tr>
+                    <!--<th scope="col">Id</th>-->
+                    <!--<th scope="col">SessionName</th>-->
+                    <th scope="col">Time</th>
+                    <th scope="col">Severity</th>
+                    <th scope="col">Message</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr data-ng-repeat="log in sessionLogs | logsFilter:filter"
+                    data-ng-class="{'alert-danger': log.severity === 'ERROR' || log.severity === 'FATAL', 'alert-warning': log.severity === 'WARNING', 'alert-success': log.severity === 'DEBUG', 'alert-info': log.severity === 'INFO' }">
+                    <!--<td>{{log.id}}</td>-->
+                    <!--<td>{{log.sessionName}}</td>-->
+                    <td>{{log.timestamp | date:'yyyy-MM-dd HH:mm:ss.sss'}}</td>
+                    <td>{{log.severity}}</td>
+                    <td>{{log.message}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
