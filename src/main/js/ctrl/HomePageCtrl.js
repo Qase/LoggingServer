@@ -15,11 +15,12 @@
                     FATAL: false,
                 }
             };
+            $scope.isCollapsed = false;
 
             $scope.onDeleteSessionLogsClicked = function () {
                 $http({
                     method: 'DELETE',
-                    url: restUrl + '/log',
+                    url: restUrl + 'log',
                     params: {
                         sessionName: $scope.selectedSession,
                     }
@@ -37,13 +38,13 @@
                 $scope.refreshData();
             };
             $scope.downloadUrl = function () {
-                return restUrl + '/log/download' + ($scope.selectedSession ? '?sessionName=' + $scope.selectedSession : '');
+                return restUrl + 'log/download' + ($scope.selectedSession ? '?sessionName=' + $scope.selectedSession : '');
             };
 
             $scope.downloadSessions = function () {
                 $http({
                     method: 'GET',
-                    url: restUrl + '/session'
+                    url: restUrl + 'session'
                 }).then(function (response) {
                     $scope.allSessions = [{label: "Všechny", value: null}];
                     response.data.forEach(function (session) {
@@ -57,7 +58,7 @@
             $scope.downloadSessionLogs = function () {
                 $http({
                     method: 'GET',
-                    url: restUrl + '/log',
+                    url: restUrl + 'log',
                     params: {
                         sessionName: $scope.selectedSession,
                         lastUpdated: $scope.lastUpdated

@@ -2,17 +2,17 @@
 
 const express = require('express');
 
-const LogRepository = require('../../repositories/logRepository');
+const DBRepository = require('../../repositories/dbRepository');
 
 let sessionRouter = express.Router();
 
 sessionRouter.get('/session', (req, res, next) => {
-    LogRepository.getAllSessions().then(
+    DBRepository.getAllSessions().then(
         (val) => {
-            return res.status(val.code).send(val.value);
+            return res.status(200).send(val);
         },
         (reason) => {
-            return res.status(reason.code).send(reason.value);
+            return res.status(400).send(reason);
         });
 });
 

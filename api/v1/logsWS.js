@@ -4,7 +4,7 @@ const webSocketsServerPort = 46379;
 const webSocketServer = require('websocket').server;
 const http = require('http');
 
-const LogRepository = require('../../repositories/logRepository');
+const DBRepository = require('../../repositories/dbRepository');
 
 var clients = [];
 
@@ -37,7 +37,7 @@ wsServer.on('request', function(request) {
 
                 // TODO validate here
 
-                LogRepository.create(logObject).then(
+                DBRepository.create(logObject).then(
                     (val) => {
                         console.log("New log stored.");
                     },
