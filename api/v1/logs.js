@@ -4,19 +4,9 @@ const express = require('express');
 const LogValidator = require('../../validators/logValidator');
 const DbRepository = require('../../repositories/dbRepository');
 const fs = require('fs');
+const common = require('./common');
 
 let logRouter = express.Router();
-
-function resolveGet(promise, res) {
-    promise.then(
-        (val) => {
-            return res.status(200).send(val);
-        },
-        (reason) => {
-            console.log(reason);
-            return res.status(400).send(reason);
-        });
-}
 
 function extractParam(req, paramName) {
     if (req.query.hasOwnProperty(paramName)) {
@@ -60,7 +50,7 @@ logRouter.post('/log', (req, res, next) => {
 logRouter.get('/log', (req, res, next) => {
     let lastUpdated = extractParam(req, 'lastUpdated');
     let sessionName = extractParam(req, 'sessionName');
-    resolveGet(DbRepository.getLogs(isNaN(lastUpdated) ? null : Number(lastUpdated), sessionName), res);
+    common.resolveGet(DbRepository.getLogs(isNaN(lastUpdated) ? null : Number(lastUpdated), sessionName), res);
 });
 
 logRouter.get('/log/download', function (req, res) {

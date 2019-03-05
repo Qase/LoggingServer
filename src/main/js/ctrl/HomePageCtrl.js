@@ -40,7 +40,7 @@
                     $scope.allSessions = [{label: "Všechny", value: null}];
                     response.data.forEach(function (session) {
                         $scope.allSessions.push({value: session, label: session});
-                    })
+                    });
                 }, function (err) {
                     console.log(err);
                 });
@@ -65,7 +65,7 @@
             $scope.init = function () {
                 $scope.refreshData();
                 setInterval(function () {
-                    $scope.refreshData()
+                    $scope.refreshData();
                 }, refreshInterval);
             };
 
