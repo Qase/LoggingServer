@@ -28,6 +28,8 @@ Easy to use server for collecting and presenting logs from connected devices.
 * `cd PROJECT_ROOT_FOLDER` 
 * run `npm install`
 * run `nodejs bin/www`
+* run `gulp libs`
+* run `gulp`
 * use port `46379` for WebSocket or `63131` for REST Api
 * browse `localhost:63131` for web interface
 

@@ -1,6 +1,6 @@
 (function (angular) {
     angular.module("weblogger")
-        .controller('HomePageCtrl', function ($scope, $http, restUrl, refreshInterval) {
+        .controller('HomePageCtrl', function ($scope, $http, restUrl, refreshInterval, LogService) {
             $scope.selectedSession = null;
             $scope.allSessions = [{label: "All", value: null}];
             $scope.sessionLogs = [];
@@ -18,13 +18,7 @@
             $scope.isCollapsed = false;
 
             $scope.onDeleteSessionLogsClicked = function () {
-                $http({
-                    method: 'DELETE',
-                    url: restUrl + 'log',
-                    params: {
-                        sessionName: $scope.selectedSession,
-                    }
-                }).then(function (response) {
+                LogService.deleteLogs($scope.selectedSession).then(function (response) {
                     $scope.sessionChanged();
                 }, function (err) {
                     console.log(err);
@@ -42,10 +36,7 @@
             };
 
             $scope.downloadSessions = function () {
-                $http({
-                    method: 'GET',
-                    url: restUrl + 'session'
-                }).then(function (response) {
+                LogService.getAllSessions().then(function (response) {
                     $scope.allSessions = [{label: "Všechny", value: null}];
                     response.data.forEach(function (session) {
                         $scope.allSessions.push({value: session, label: session});
@@ -56,14 +47,7 @@
             };
 
             $scope.downloadSessionLogs = function () {
-                $http({
-                    method: 'GET',
-                    url: restUrl + 'log',
-                    params: {
-                        sessionName: $scope.selectedSession,
-                        lastUpdated: $scope.lastUpdated
-                    }
-                }).then(function (response) {
+                LogService.getLogs($scope.selectedSession, $scope.lastUpdated).then(function (response) {
                     if (response.data.length > 0) {
                         $scope.lastUpdated = response.data[response.data.length - 1].timestamp;
                         $scope.sessionLogs = $scope.sessionLogs.concat(response.data);
@@ -72,7 +56,6 @@
                     console.log(err);
                 });
             };
-
 
             $scope.refreshData = function () {
                 $scope.downloadSessions();
