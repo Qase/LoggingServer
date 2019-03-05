@@ -62,3 +62,6 @@ typings/
 
 # generated webapp files
 src/main/webapp/resources/*
+
+db/*
+log.txt

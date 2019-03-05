@@ -93,8 +93,9 @@ gulp.task('libs', function () {
     gulp.src([
         prefix + "angular.js",
         prefix + "angular-route.js",
+        prefix + "ui-bootstrap.js",
         prefix + "moment.js",
-        prefix + "lodash.js",
+        prefix + "lodash.js"
     ])
         .pipe(plumber())
         .pipe(ngAnnotate())
