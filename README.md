@@ -1,6 +1,6 @@
 [![codebeat badge](https://codebeat.co/badges/bd4bb644-ec62-405c-bd78-e64c3cd8f3b6)](https://codebeat.co/projects/github-com-qase-loggingserver-master)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Maintainer: Zdenál](https://img.shields.io/badge/Maintainer-luba-blue.svg)](mailto:zdenek.balak@quanti.cz)
+[![Maintainer: Zdenál](https://img.shields.io/badge/Maintainer-Zdenál-blue.svg)](mailto:zdenek.balak@quanti.cz)
 [![Qase: KotlinLogger](https://img.shields.io/badge/Qase-LoggingServer-ff69b4.svg)](https://github.com/Qase/LoggingServer)
 
 ## Logging server
