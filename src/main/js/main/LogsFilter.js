@@ -23,6 +23,6 @@
             }
         }
         return filteredLogs;
-    }
-})
+    };
+    });
 })(angular);

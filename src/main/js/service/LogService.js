@@ -6,7 +6,7 @@
                     return $http({
                         method: 'GET',
                         url: restUrl + 'session'
-                    })
+                    });
                 },
                 getLogs: function (selectedSession, lastUpdated) {
                     return $http({
