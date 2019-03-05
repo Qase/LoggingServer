@@ -59,3 +59,6 @@ typings/
 
 # next.js build output
 .next
+
+# generated webapp files
+src/main/webapp/resources/*
