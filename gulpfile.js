@@ -94,7 +94,7 @@ gulp.task('default', function () {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({
         parameterLimit: 100000,
-        limit: '50mb',
+        limit: '100kb',
         extended: true
     }));
     app.use(bodyParser.json({type: 'application/*+json'}));
