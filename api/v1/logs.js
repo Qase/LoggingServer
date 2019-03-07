@@ -8,14 +8,6 @@ const common = require('./common');
 
 let logRouter = express.Router();
 
-function extractParam(req, paramName) {
-    if (req.query.hasOwnProperty(paramName)) {
-        return req.query[paramName];
-    } else {
-        return null;
-    }
-}
-
 logRouter.post('/log', (req, res, next) => {
     LogValidator.validate(req, (result) => {
         try {
@@ -48,13 +40,13 @@ logRouter.post('/log', (req, res, next) => {
 });
 
 logRouter.get('/log', (req, res, next) => {
-    let lastUpdated = extractParam(req, 'lastUpdated');
-    let sessionName = extractParam(req, 'sessionName');
+    let lastUpdated = common.extractQueryParam(req, 'lastUpdated');
+    let sessionName = common.extractQueryParam(req, 'sessionName');
     common.resolveGet(DbRepository.getLogs(isNaN(lastUpdated) ? null : Number(lastUpdated), sessionName), res);
 });
 
 logRouter.get('/log/download', function (req, res) {
-    DbRepository.getAsString(extractParam(req, 'sessionName')).then((val) => {
+    DbRepository.getAsString(common.extractQueryParam(req, 'sessionName')).then((val) => {
             let file = 'log.txt';
             fs.writeFile(file, val, function (err) {
                 if (err) throw err;
@@ -69,7 +61,7 @@ logRouter.get('/log/download', function (req, res) {
 });
 
 logRouter.delete('/log', (req, res, next) => {
-    DbRepository.delete(extractParam(req, 'sessionName')).then(
+    DbRepository.delete(common.extractQueryParam(req, 'sessionName')).then(
         (val) => {
             return res.status(204).send(val);
         },

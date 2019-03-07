@@ -113,8 +113,10 @@ gulp.task('default', function () {
 
     const openLoggingApi = require('./api/v1/logs');
     const openSessionsApi = require('./api/v1/sessions');
+    const historyApi = require('./api/v1/history');
     app.use('/api/v1/', openLoggingApi);
     app.use('/api/v1/', openSessionsApi);
+    app.use('/api/v1/', historyApi);
 
     app.start = function (opts) {
 

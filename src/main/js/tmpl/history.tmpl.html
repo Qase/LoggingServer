@@ -6,22 +6,32 @@
         </div>
     </div>
 
+    <div class="row " style="padding-bottom: 10px">
+        <div class="col-md-6">
+            <select id="file" class="form-control form-control mb-2 mr-sm-2 mb-sm-0"
+                    data-ng-model="selectedFile" data-ng-change="downloadSessions()"
+                    data-ng-options="x as x for x in history">
+                <option disabled value="">Choose db file</option>
+            </select>
+        </div>
+
+        <div class="col-md-1">
+            <button type="button" class="btn btn-primary" data-ng-click="deleteFile()"
+                    data-ng-hide="!selectedFile">Delete file
+            </button>
+        </div>
+    </div>
+
     <div class="row ">
         <div class="col-md-6">
             <select id="sessionName" class="form-control form-control mb-2 mr-sm-2 mb-sm-0"
-                    data-ng-model="selectedSession" data-ng-change="sessionChanged()"
+                    data-ng-model="selectedSession" data-ng-change="downloadSessionLogs()"
                     data-ng-options="x.value as x.label for x in allSessions">
             </select>
         </div>
 
         <div class="col-md-1">
             <a class="btn btn-primary" href="{{downloadUrl()}}" target="_blank">Download logs</a>
-        </div>
-
-        <div class="col-md-1">
-            <button type="button" class="btn btn-primary" data-ng-click="onDeleteSessionLogsClicked()"
-                    data-ng-hide="!selectedSession">Delete Session
-            </button>
         </div>
     </div>
 
@@ -34,12 +44,6 @@
                         <h5 class="mb-0">
                             <button type="button" class="btn btn-default" ng-click="isCollapsed = !isCollapsed">Filter
                                 Options
-                            </button>
-                            <button type="button" class="btn btn-default" ng-show="!tracking"
-                                    ng-click="tracking = true">Start tracking
-                            </button>
-                            <button type="button" class="btn btn-default" ng-show="tracking"
-                                    ng-click="tracking = false">Stop tracking
                             </button>
                         </h5>
                     </div>
@@ -88,7 +92,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr data-ng-repeat="log in sessionLogs | logsFilter:filter" title="{{log.sessionName}}"
+                <tr data-ng-repeat="log in sessionLogs | logsFilter:filter" uib-tooltip="{{log.sessionName}}"
                     data-ng-class="{'alert-danger': log.severity === 'ERROR' || log.severity === 'FATAL', 'alert-warning': log.severity === 'WARNING', 'alert-success': log.severity === 'DEBUG', 'alert-info': log.severity === 'INFO' }">
                     <!--<td>{{log.id}}</td>-->
                     <!--<td>{{log.sessionName}}</td>-->
@@ -100,11 +104,8 @@
                 <tfoot>
                 <tr>
                     <td id="bottom" colspan="3">
-                        <button class="btn btn-danger" ng-show="tracking" ng-click="tracking = false">Stop tracking
-                        </button>
                         <button class="btn btn-info" ng-click="goToTop()">Go to top</button>
                     </td>
-
                 </tr>
                 </tfoot>
             </table>

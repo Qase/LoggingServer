@@ -1,6 +1,7 @@
 (function (angular) {
     angular.module("weblogger")
-        .controller('HomePageCtrl', function ($scope, $http, restUrl, refreshInterval, LogService) {
+        .controller('HomePageCtrl', function ($scope, $http, restUrl, refreshInterval, LogService, $location,
+                                              $anchorScroll, $timeout, $window, $interval) {
             $scope.selectedSession = null;
             $scope.allSessions = [{label: "All", value: null}];
             $scope.sessionLogs = [];
@@ -16,6 +17,18 @@
                 }
             };
             $scope.isCollapsed = false;
+            $scope.tracking = true;
+
+            $scope.goToTop = function () {
+                $window.scrollTo(0, 0);
+            };
+
+            $scope.goToBottom = function () {
+                $timeout(function () {
+                    $location.hash('bottom');
+                    $anchorScroll();
+                }, 0, false);
+            };
 
             $scope.onDeleteSessionLogsClicked = function () {
                 LogService.deleteLogs($scope.selectedSession).then(function (response) {
@@ -31,6 +44,7 @@
                 $scope.sessionLogs = [];
                 $scope.refreshData();
             };
+
             $scope.downloadUrl = function () {
                 return restUrl + 'log/download' + ($scope.selectedSession ? '?sessionName=' + $scope.selectedSession : '');
             };
@@ -51,6 +65,9 @@
                     if (response.data.length > 0) {
                         $scope.lastUpdated = response.data[response.data.length - 1].timestamp;
                         $scope.sessionLogs = $scope.sessionLogs.concat(response.data);
+                        if ($scope.tracking) {
+                            $scope.goToBottom();
+                        }
                     }
                 }, function (err) {
                     console.log(err);
@@ -64,10 +81,15 @@
 
             $scope.init = function () {
                 $scope.refreshData();
-                setInterval(function () {
+                $scope.interval = $interval(function () {
                     $scope.refreshData();
                 }, refreshInterval);
             };
+            $scope.$on("$destroy", function () {
+                if ($scope.interval) {
+                    $interval.cancel($scope.interval);
+                }
+            });
 
             $scope.init();
         });

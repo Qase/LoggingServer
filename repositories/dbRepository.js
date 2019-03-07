@@ -7,7 +7,7 @@ const LogModel = require("../models/logModel").LogModel;
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
 let adapter;
-let db;
+let database;
 const logsTable = "logs";
 const timestamp = "timestamp";
 const fs = require("fs");
@@ -16,7 +16,7 @@ const moment = require("moment");
 
 initDb().then(
     (val) => {
-        db.defaults({logs: []})
+        database.defaults({logs: []})
             .write();
     },
     (reason) => {
@@ -34,12 +34,12 @@ function initDb() {
                         reject(err);
                     } else {
                         if (files.length === 0) {
-                            adapter = new FileSync('db/db' + moment().format('YYYY-MM-DD-hh-mm-ss') + '.json');
+                            adapter = new FileSync('db/db-' + moment().format('YYYY-MM-DD-hh-mm-ss') + '.json');
                         } else {
                             files = _.sortBy(files);
                             adapter = new FileSync('db/' + files[files.length - 1]);
                         }
-                        db = low(adapter);
+                        database = low(adapter);
                         resolve();
                     }
                 });
@@ -65,12 +65,12 @@ function checkDirectory(directory, callback) {
 let DBRepository = {
     create: (logObjects) => {
         return new Promise((resolve, reject) => {
-            if (db.get(logsTable)
+            if (database.get(logsTable)
                 .size()
-                .value() > 10000) {
-                adapter = new FileSync('db/db' + moment().format('YYYY-MM-DD-hh-mm-ss') + '.json');
-                db = low(adapter);
-                db.defaults({logs: []})
+                .value() > 2000) {
+                adapter = new FileSync('db/db-' + moment().format('YYYY-MM-DD-hh-mm-ss') + '.json');
+                database = low(adapter);
+                database.defaults({logs: []})
                     .write();
             }
             let newLogs = _.map(logObjects, function (logObject) {
@@ -84,7 +84,7 @@ let DBRepository = {
             });
 
             _.each(newLogs, function (log) {
-                db.get(logsTable).push(log).write();
+                database.get(logsTable).push(log).write();
             });
             resolve(newLogs);
         });
@@ -92,7 +92,7 @@ let DBRepository = {
 
     getAsString: (sessionName) => {
         return new Promise((resolve, reject) => {
-            let logs = db.get(logsTable)
+            let logs = database.get(logsTable)
                 .filter(function (log) {
                     return !(sessionName && sessionName !== log.sessionName);
                 })
@@ -114,7 +114,7 @@ let DBRepository = {
     },
     getLogs: (lastUpdated, sessionName) => {
         return new Promise((resolve, reject) => {
-            let logs = db.get(logsTable)
+            let logs = database.get(logsTable)
                 .filter(function (log) {
                     if (lastUpdated && lastUpdated >= log.timestamp) {
                         return false
@@ -131,7 +131,7 @@ let DBRepository = {
     },
     delete: (sessionName) => {
         return new Promise((resolve, reject) => {
-            let removed = db.get(logsTable)
+            let removed = database.get(logsTable)
                 .remove(function (log) {
                     if (sessionName && sessionName !== log.sessionName) {
                         return false;
@@ -153,7 +153,7 @@ let DBRepository = {
                 .value();
             resolve(logs);
         });
-    },
+    }
 };
 
 module.exports = DBRepository;

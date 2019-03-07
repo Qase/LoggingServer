@@ -7,6 +7,10 @@
                     templateUrl: 'tmpl/home-page.tmpl.html',
                     controller: 'HomePageCtrl'
                 });
+                $routeProvider.when('/history', {
+                    templateUrl: 'tmpl/history.tmpl.html',
+                    controller: 'HistoryCtrl'
+                });
 
                 $locationProvider.html5Mode(true);
 
