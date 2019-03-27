@@ -210,6 +210,8 @@ gulp.task('libs', function () {
     gulp.src([
         prefix + "angular.js",
         prefix + "angular-route.js",
+        prefix + "jquery.js",
+        prefix + "bootstrap.js",
         prefix + "ui-bootstrap.js",
         prefix + "moment.js",
         prefix + "lodash.js"
