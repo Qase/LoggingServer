@@ -143,11 +143,7 @@ let DBRepository = {
     },
     getAllSessions: () => {
         return new Promise((resolve, reject) => {
-            console.log(db.get(logsTable)
-                .map('sessionName')
-                .uniq()
-                .value());
-            let logs = db.get(logsTable)
+            let logs = database.get(logsTable)
                 .map('sessionName')
                 .uniq()
                 .value();
