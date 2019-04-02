@@ -1,0 +1,32 @@
+<div class="container-fluid">
+    <div class="row spaces">
+        <div class="col-sm-12">
+            <h1>Uploads</h1>
+        </div>
+    </div>
+
+    <div class="row spaces">
+        <div class="col-md-2">
+            <label>Platform</label>
+            <select id="platform" class="form-control mb-2 mr-sm-2 mb-sm-0"
+                    data-ng-model="selectedPlatform"
+                    data-ng-options="x as x for x in platforms">
+            </select>
+        </div>
+    </div>
+    <div class="row spaces">
+        <div class="col-md-2">
+            <label for="folder">Folder name</label>
+            <input id="folder" type="text" ng-model="folder" class="form-control">
+        </div>
+    </div>
+
+    <div class="row spaces">
+        <div class="col-md-2">
+            <input id="zip-file" type="file" file-model="zipFile">
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-primary" ng-click="uploadZip()">Upload</button>
+        </div>
+    </div>
+</div>

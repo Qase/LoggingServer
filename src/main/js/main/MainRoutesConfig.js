@@ -11,6 +11,10 @@
                     templateUrl: 'tmpl/history.tmpl.html',
                     controller: 'HistoryCtrl'
                 });
+                $routeProvider.when('/uploads', {
+                    templateUrl: 'tmpl/uploads.tmpl.html',
+                    controller: 'UploadsCtrl'
+                });
 
                 $locationProvider.html5Mode(true);
 
