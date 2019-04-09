@@ -24,7 +24,7 @@ uploadsRouter.post('/uploads/zip/platforms', (req, res, next) => {
                 pos += data[i].length;
             }
             // var buf =  Buffer.from(data);
-            UploadsRepository.uploadZipFile(buf, filename, folder).then(
+            UploadsRepository.uploadZipFile(platform, buf, filename, folder).then(
                 (val) => {
                     return res.status(200).send(val);
                 },

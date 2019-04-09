@@ -7,6 +7,7 @@ const FileSync = require('lowdb/adapters/FileSync');
 const fs = require("fs");
 const moment = require("moment");
 const AdmZip = require('adm-zip');
+const LogParser = require('../models/LogParser');
 
 
 function checkDirectory(directory) {
@@ -31,26 +32,33 @@ function checkDirectory(directory) {
 }
 
 let UploadsRepository = {
-    uploadZipFile: (buffer, fileName, folder) => {
+    uploadZipFile: (platform, buffer, fileName, folder) => {
         return new Promise((resolve, reject) => {
-            checkDirectory('./uploads/zip').then(
+            let zip = AdmZip(buffer);
+            let zipEntries = zip.getEntries();
+            checkDirectory('./uploads/' + platform + '/db/' + folder).then(
                 (val) => {
-                    let zip = AdmZip(buffer);
-                    var zipEntries = zip.getEntries();
-                    checkDirectory('./uploads/zip/' + folder).then(
-                        (val) => {
-                            zipEntries.forEach(function (zipEntry) {
-                                zip.extractEntryTo(/*entry name*/zipEntry.entryName, /*target path*/'./uploads/zip/' + folder, /*maintainEntryPath*/false, /*overwrite*/true);
-                            });
-                            resolve();
-                        },
-                        (reason) => {
-                            reject();
-                        });
+                    zipEntries.forEach(function (zipEntry) {
+                        let logArray = LogParser.parse(platform, zipEntry.getData().toString('utf8'));
+                        if (logArray.length > 0) {
+                            let filePath = './uploads/' + platform + '/db/' + folder + '/' + zipEntry.name.replace(".log", "") + '.json';
+                            try {
+                                fs.unlinkSync(filePath);
+                            }
+                            catch (e) {
+                            }
+                            let adapter = new FileSync(filePath);
+                            let database = low(adapter);
+                            database.defaults({logs: []}).write();
+                            database.get("logs").push(logArray).write();
+                        }
+                    });
+                    resolve();
                 },
                 (reason) => {
-                    reject(reason)
+                    reject();
                 });
+
         });
     }
 };
