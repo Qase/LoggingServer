@@ -20,6 +20,7 @@
             $scope.tracking = true;
 
             $scope.goToTop = function () {
+                $scope.tracking = false;
                 $window.scrollTo(0, 0);
             };
 

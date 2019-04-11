@@ -67,7 +67,7 @@ let DBRepository = {
         return new Promise((resolve, reject) => {
             if (database.get(logsTable)
                 .size()
-                .value() > 2000) {
+                .value() > 200000) {
                 adapter = new FileSync('db/db-' + moment().format('YYYY-MM-DD-hh-mm-ss') + '.json');
                 database = low(adapter);
                 database.defaults({logs: []})

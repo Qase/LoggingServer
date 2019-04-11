@@ -31,7 +31,7 @@ let AndroidLogParser = {
         } else if (severityTag === 'I') {
             return "INFO";
         } else if (severityTag === 'W') {
-            return "WARN";
+            return "WARNING";
         } else if (severityTag === 'A') {
             return "ASSERT";
         } else {
@@ -44,7 +44,8 @@ let AndroidLogParser = {
         let severityTag = rest.substr(rest.indexOf(' ') + 1, 1);
         let text = rest.substr(rest.indexOf(' ') + 1);
         let severity = AndroidLogParser.parseSeverity(severityTag);
-        const timestamp = moment(date, 'YYYY-MM-DD hh:mm:ss.SSS').unix();
+
+        const timestamp = moment(date, 'YYYY-MM-DD hh:mm:ss.SSS').unix() * 1000;
         if (!timestamp || isNaN(timestamp)) {
             throw new Error("Invalid date: " + date);
         }

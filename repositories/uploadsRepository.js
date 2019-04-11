@@ -8,7 +8,8 @@ const fs = require("fs");
 const moment = require("moment");
 const AdmZip = require('adm-zip');
 const LogParser = require('../models/LogParser');
-
+const logsTable = "logs";
+const timestamp = "timestamp";
 
 function checkDirectory(directory) {
     return new Promise((resolve, reject) => {
@@ -32,7 +33,7 @@ function checkDirectory(directory) {
 }
 
 let UploadsRepository = {
-    uploadZipFile: (platform, buffer, fileName, folder) => {
+    uploadZipFile: (platform, buffer, folder) => {
         return new Promise((resolve, reject) => {
             let zip = AdmZip(buffer);
             let zipEntries = zip.getEntries();
@@ -50,15 +51,68 @@ let UploadsRepository = {
                             let adapter = new FileSync(filePath);
                             let database = low(adapter);
                             database.defaults({logs: []}).write();
-                            database.get("logs").push(logArray).write();
+                            database.set(logsTable, logArray).write();
                         }
                     });
                     resolve();
                 },
                 (reason) => {
-                    reject();
+                    reject(reason);
                 });
-
+        });
+    },
+    getFolders: (platform) => {
+        return new Promise((resolve, reject) => {
+            checkDirectory('./uploads/' + platform + '/db').then(
+                (val) => {
+                    fs.readdir('./uploads/' + platform + '/db', (err, files) => {
+                        if (err) {
+                            reject(err);
+                        }
+                        var folders = [];
+                        files.forEach(file => {
+                            folders.push(file);
+                        });
+                        resolve(folders);
+                    });
+                },
+                (reason) => {
+                    reject(reason);
+                });
+        });
+    },
+    getDbNames: (platform, folder) => {
+        return new Promise((resolve, reject) => {
+            checkDirectory('./uploads/' + platform + '/db/' + folder).then(
+                (val) => {
+                    fs.readdir('./uploads/' + platform + '/db/' + folder, (err, files) => {
+                        if (err) {
+                            reject(err);
+                        }
+                        var folders = [];
+                        files.forEach(file => {
+                            folders.push(file);
+                        });
+                        resolve(folders);
+                    });
+                },
+                (reason) => {
+                    reject(reason);
+                });
+        });
+    },
+    getLogs: (platform, folder, dbName) => {
+        return new Promise((resolve, reject) => {
+            try {
+                let adapter = new FileSync('./uploads/' + platform + '/db/' + folder + '/' + dbName);
+                let db = low(adapter);
+                let logs = db.get(logsTable)
+                    .sortBy(timestamp)
+                    .value();
+                resolve(logs);
+            } catch (e) {
+                reject(e);
+            }
         });
     }
 };

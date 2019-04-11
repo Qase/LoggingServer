@@ -1,7 +1,25 @@
-<div class="container-fluid">
+<ul class="nav nav-tabs">
+    <li role="presentation" ng-class="{ active: mode==='UPLOAD' }">
+        <a ng-click="changeMode('UPLOAD')" role="button">
+            UPLOAD
+        </a>
+    </li>
+    <li role="presentation" ng-class="{ active: mode==='ANDROID' }">
+        <a ng-click="changeMode('ANDROID')" role="button">
+            ANDROID
+        </a>
+    </li>
+    <li role="presentation" ng-class="{ active: mode==='IOS' }">
+        <a ng-click="changeMode('IOS')" role="button">
+            IOS
+        </a>
+    </li>
+</ul>
+
+<div class="container-fluid" ng-show="mode==='UPLOAD'">
     <div class="row spaces">
         <div class="col-sm-12">
-            <h1>Uploads</h1>
+            <h1>Upload</h1>
         </div>
     </div>
 
@@ -9,7 +27,7 @@
         <div class="col-md-2">
             <label>Platform</label>
             <select id="platform" class="form-control mb-2 mr-sm-2 mb-sm-0"
-                    data-ng-model="selectedPlatform"
+                    data-ng-model="upload.platform"
                     data-ng-options="x as x for x in platforms">
             </select>
         </div>
@@ -17,16 +35,123 @@
     <div class="row spaces">
         <div class="col-md-2">
             <label for="folder">Folder name</label>
-            <input id="folder" type="text" ng-model="folder" class="form-control">
+            <input id="folder" type="text" ng-model="upload.folder" class="form-control">
         </div>
     </div>
 
     <div class="row spaces">
         <div class="col-md-2">
-            <input id="zip-file" type="file" file-model="zipFile">
+            <input id="zip-file" type="file" file-model="upload.zipFile">
         </div>
         <div class="col-md-2">
             <button class="btn btn-primary" ng-click="uploadZip()">Upload</button>
         </div>
     </div>
+</div>
+
+<div class="container-fluid" ng-show="mode!=='UPLOAD'">
+    <div class="row " style="padding: 10px 0">
+        <div class="col-md-6">
+            <select class="form-control form-control mb-2 mr-sm-2 mb-sm-0"
+                    data-ng-model="selection.folder" data-ng-change="loadDbNames()"
+                    data-ng-options="x as x for x in folders">
+                <option disabled value="">Choose folder</option>
+            </select>
+        </div>
+
+        <!--<div class="col-md-1">-->
+        <!--<button type="button" class="btn btn-primary" data-ng-click="deleteFile()"-->
+        <!--data-ng-hide="!selectedFile">Delete file-->
+        <!--</button>-->
+        <!--</div>-->
+    </div>
+    <div class="row " style="padding-bottom: 10px">
+        <div class="col-md-6">
+            <select id="file" class="form-control form-control mb-2 mr-sm-2 mb-sm-0"
+                    data-ng-model="selection.fileName" data-ng-change="loadLogs()"
+                    data-ng-options="x as x for x in dbNames">
+                <option disabled value="">Choose db file</option>
+            </select>
+        </div>
+
+        <!--<div class="col-md-1">-->
+        <!--<button type="button" class="btn btn-primary" data-ng-click="deleteFile()"-->
+        <!--data-ng-hide="!selectedFile">Delete file-->
+        <!--</button>-->
+        <!--</div>-->
+    </div>
+
+
+    <div class="row ">
+        <div class="col-md-6">
+
+            <div class="accordion" id="accordionExample">
+                <div class="card">
+                    <div class="card-header" id="headingTwo">
+                        <h5 class="mb-0">
+                            <button type="button" class="btn btn-default" ng-click="isCollapsed = !isCollapsed">Filter
+                                Options
+                            </button>
+                        </h5>
+                    </div>
+
+                    <div uib-collapse="isCollapsed">
+                        <div class="card-body">
+                            <form>
+                                <div class="form-group row">
+                                    <div class="col-sm-12">
+                                        <input type="text" id="messageFilter" class="form-control"
+                                               placeholder="Message filter" data-ng-model="filter.messageFilter">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="checkbox-inline"
+                                         data-ng-repeat="(type,enabled) in filter.logSeverities">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="checkbox"
+                                                   data-ng-model="filter.logSeverities[type]">
+                                            {{type}}
+                                        </label>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr/>
+
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Time</th>
+                    <th scope="col">Severity</th>
+                    <th scope="col">Message</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr data-ng-repeat="log in logs | logsFilter:filter"
+                    data-ng-class="{'alert-danger': log.severity === 'ERROR' || log.severity === 'FATAL', 'alert-warning': log.severity === 'WARNING', 'alert-success': log.severity === 'DEBUG', 'alert-info': log.severity === 'INFO' }">
+                    <td>{{log.timestamp | date:'yyyy-MM-dd HH:mm:ss.sss'}}</td>
+                    <td>{{log.severity}}</td>
+                    <td>{{log.message}}</td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td id="bottom" colspan="3">
+                        <button class="btn btn-info" ng-click="goToTop()">Go to top</button>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
 </div>
